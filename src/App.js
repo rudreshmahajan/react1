@@ -1,7 +1,7 @@
-  
 import logo from "./logo.svg";
 import "./App.css";
 import { useState } from "react";
+import axios from "axios";
 
 export default function App() {
   return (
@@ -12,117 +12,34 @@ export default function App() {
 }
 
 function MyRegisterComponent() {
-  let [userList, setUserList] = useState([
-    { id: 2, name: "rahul", email: "rahul@gmail.com", mobile: "212121" },
-    { id: 1, name: "sachin", email: "sachin@gmail.com", mobile: "212121" },
-  ]);
+  const [list, setList] = useState([]);
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
-  const [mobile, setMobile] = useState("");
+  const makeAjaxBackendApiCall = async () => {
+    const url = "https://jsonplaceholder.typicode.com/posts";
+    const result = await axios.get(url);
 
-
-  const usernameChangeHandler = (e) => setUsername(e.target.value);
-  const passwordChangeHandler = (e) => setPassword(e.target.value);
-  const emailChangeHandler = (e) => setEmail(e.target.value);
-  const mobileChangeHandler = (e) => setMobile(e.target.value);
-
-
-  const addNewUser = () => {
-    const newuser = {
-      id: userList.length + 1,
-      name: username,
-      password: password,
-      email,
-      mobile,
-    };
-
-    const newUserList = [newuser, ...userList];
-    setUserList(newUserList);
+    // console.log(result.data);
+    const newlist = [...result.data, ...list];
+    setList(newlist);
   };
 
   return (
     <div>
-      <h1 className="bg-dark text-light p-3 ">User Registeation </h1>
+      <h1 className="bg-primary text-light p-4">Lets connect with backend</h1>
+      <input
+        type="button"
+        className="btn btn-primary w-100 mb-1"
+        value="MAKE AJAX/BACKEND CALL"
+        onClick={makeAjaxBackendApiCall}
+      />
 
-      {/** FORM COMPONENT */}
-      <form className="m-2">
-        <div>
-          <input
-            type="text"
-            className="form-control form-control-lg mb-1"
-            placeholder="Enter username"
-            value={username}
-            onChange={usernameChangeHandler}
-          />
-        </div>
-
-        <div>
-          <input
-            type="password"
-            className="form-control form-control-lg mb-1"
-            placeholder="Enter Passwword"
-            value={password}
-            onChange={passwordChangeHandler}
-          />
-        </div>
-
-        <div>
-          <input
-            type="email"
-            className="form-control form-control-lg mb-1"
-            placeholder="Enter Email"
-            value={email}
-            onChange={emailChangeHandler}
-          />
-        </div>
-
-        <div>
-          <input
-            type="mobile"
-            className="form-control form-control-lg mb-1"
-            placeholder="Enter Mobile"
-            value={mobile}
-            onChange={mobileChangeHandler}
-          />
-        </div>
-
-        <div>
-          <input
-            type="button"
-            value="Register"
-            onClick={addNewUser}
-            className="btn btn-lg btn-secondary w-100"
-          />
-        </div>
-      </form>
-
-      {/** List BOX HERE */}
-      <table className="table table-dark table-striped m-2">
-        <thead>
-          <tr>
-            <th scope="col">#ID</th>
-            <th scope="col">USERNAME</th>
-            <th scope="col">PASSWORD</th>
-            <th scope="col">EMAIL</th>
-            <th scope="col">MOBILE</th>
-          </tr>
-        </thead>
-        <tbody>
-          {userList.map((item) => {
-            return (
-              <tr>
-                <td>{item.id}</td>
-                <td>{item.name}</td>
-                <td>{item.password}</td>
-                <td>{item.email}</td>
-                <td>{item.mobile}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      {list.map((item) => {
+        return (
+          <div className="alert alert-primary text-capitalize">
+            {item.title}
+          </div>
+        );
+      })}
     </div>
   );
 }
